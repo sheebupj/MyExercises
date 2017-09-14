@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<mvc:annotation-driven />
+
+	<context:component-scan base-package="net.nestgroup.webmvc.controller" />
+	<context:component-scan base-package="net.nestgroup.webmvc.dao" />
+	<context:component-scan base-package="net.nestgroup.webmvc.service" />
+	<bean
+	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver" />
+		<property name="url" value="jdbc:derby:seconddb;create=true" />
+		
+	</bean>
+
+	<!-- Hibernate 4 SessionFactory Bean definition -->
+	<bean id="hibernate4AnnotatedSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+            <list>
+                <value>net.nestgroup.webmvc.entity.Person</value>
+             	 <value>net.nestgroup.webmvc.entity.Employee</value>
+               <value>net.nestgroup.webmvc.entity.Project</value>
+            </list>
+        </property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.DerbyDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				 <prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+	 
+    
+    <bean id="employeeDao" class="net.nestgroup.webmvc.dao.EmployeeDaoImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+     <bean id="personDAO" class="net.nestgroup.webmvc.dao.PersonDAOImpl">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </bean>
+    
+    
+    <bean id="employeeService" class="net.nestgroup.webmvc.service.EmployeeServiceImpl">
+        <property name="employeeDao" ref="employeeDao"></property>
+    </bean>
+    
+    
+    <bean id="personService" class="net.nestgroup.webmvc.service.PersonServiceImpl">
+        <property name="personDAO" ref="personDAO"></property>
+    </bean>
+    
+    
+    <bean id="employeeProjectController" class="net.nestgroup.webmvc.controller.EmployeeProjectController" >
+        <property name="employeeService" ref="employeeService"></property>
+         <property name="personService" ref="personService"></property>
+    </bean>
+   	<!-- Transaction -->
+    <bean id="transactionManager"
+         class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+       
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+	
+	
+
+	
+	
+
+</beans>
