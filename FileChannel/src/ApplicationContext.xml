@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:annotation-config/>
+	
+	<bean id="fileDivisionNos" class="com.paremal.sheebu.spring.FileDivisionNumbersCalcImpl"/>
+	
+	<bean id="fileMergeUtil" class="com.paremal.sheebu.spring.FileMergeUtilityImpl" />
+	
+	<bean id="readWriter"  class="com.paremal.sheebu.spring.ReadersAndWrittersImpl1" >
+		<constructor-arg   index="0"  value="2" />
+		<constructor-arg  index="1" value="input40.txt" />
+		<constructor-arg  index="2" value="." />
+		<property name="fileDivisionNumbersObj" ref="fileDivisionNos" />
+	</bean>
+	<bean id="main" class="com.paremal.sheebu.spring.MainAppBeanImpl" >
+		<constructor-arg ref="readWriter" />
+		<property name="fileMergeUtility" ref="fileMergeUtil" />
+	</bean>
+	<bean id="ad1" class="com.paremal.sheebu.Address"/>
+	
+	
+	<bean id="em1" class="com.paremal.sheebu.Employee" scope="prototype" >
+	<property name="name" value="sheebu"></property>
+	</bean>
+	
+	
+	
+	<bean id="em2" class="com.paremal.sheebu.Employee" scope="prototype" >
+	<property name="name" value="sheenoj"></property>
+	</bean>
+	
+	
+	
+	
+	
+
+</beans>
