@@ -1,6 +1,8 @@
 package prime;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Prime {
 	int pNumber;
@@ -26,6 +28,16 @@ public class Prime {
 		System.out.println("starting");
 		
 			prime.checkPrimeOrNot();
+			
+	/*
+	 * find all primes less than or equal to 100 using java 8
+	 */
+			IntStream.rangeClosed(2,100).boxed().filter(n-> {
+				for(int i=3;i*i<=n;i++) {
+					if(n%i==0) return false;
+				}
+				return true;
+			}).forEach(System.out::println);
 			
 		}
 	}
